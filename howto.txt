@@ -1,0 +1,6 @@
+usage:  ./cleavagesim.out [Int - polymer size] [Float - digestion rate] [Int - rng seed]
+output: [time] [[Integer configuration array]] [average polymer size]
+
+Labelled DNA system, use makeSPLIT(i)
+Unlabelled DNA system, use makeSPLITunlabelled(i)
+
