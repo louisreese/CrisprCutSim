@@ -21,12 +21,20 @@ public:
 	
 	void InitClass(char *parameters[]);	// Initialize parameters
 	void RngInit(char *parameters[]);	// Random number generator
+
+	void printCONF(std::ostream& os);	// Print configuration
+	std::string createFilename(const std::string &base); // Create filename fo initial parameters.
 	
 	long int RanInit;
 	int i;
 	
-	int KIN(char *parameters[]);	// Stochastic simulation algorithm
+	// Simulation algorithm
+	int KIN(char *parameters[], void (SIM::*reaction)(int i), std::ostream& os);	
 	
+	// Functions to update configuration by splitting one polymer
+	void makeSPLIT(int i);				// Discards unlabelled polymers
+	void makeSPLITunlabelled(int i);	// Keeps unlabelled polymers
+
 	int Size, MAX_count, Number;
 	double k1;
 	
@@ -40,9 +48,6 @@ private:
 	
 	std::deque <double> RATES; 				// Propensity vector
 	std::deque < unsigned long int > CONF; 	// Current polymer configuration 
-	
-	// Functions to update configuration by splitting one polymer
-	void makeSPLIT(int i);				// Discards unlabelled polymers
-	void makeSPLITunlabelled(int i);	// Keeps unlabelled polymers
+
 	
 };	

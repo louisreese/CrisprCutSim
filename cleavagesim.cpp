@@ -12,9 +12,10 @@
 
 #include <iostream>
 #include <math.h>
+#include <sstream>
+#include <iomanip>  // For std::setprecision
 
 #include "cleavagesim.h"
-
 
 using namespace std;
 
@@ -23,6 +24,13 @@ void SIM::RngInit(char *parameters[]){
        r = gsl_rng_alloc(gsl_rng_mt19937);
        RanInit=(long int)atoi(parameters[3]);
        gsl_rng_set(r, RanInit);
+}
+
+// Creat Filename
+std::string SIM::createFilename(const std::string &base) {
+    std::ostringstream oss;
+    oss << base << "_" << std::fixed << std::setprecision(8) << SIM::Size << "_" << SIM::k1 << "_" << SIM::RanInit << ".dat";
+    return oss.str();
 }
 
 //Initiallise constants and simulation parmeters
@@ -38,19 +46,7 @@ void SIM::InitClass(char *parameters[]){
 	
 	Clock_count = 1.0;
 	Clock = 1;
-
-	/* Display configuration on terminal:
-		First row: time
-		2nd to n-1 row: configuration
-		nth row: average length of the configuration
-	*/
-		
-	std::cout << "0 " ;
-	for (int k=0; k<=CONF.size(); k++) {
-			std::cout << CONF[k] << " ";
-			position = position + (k)*CONF[k];
-		}
-	std::cout << " " << Size << "\n";
+	// printCONF(fs);
 
 }
 
@@ -64,14 +60,16 @@ void SIM::makeSPLIT(int i){
 // Update the configuration UNlabelled DNA
 void SIM::makeSPLITunlabelled(int i){
 	CONF[i]=CONF[i]-1;
+
 	newsize1 = 1 + gsl_rng_uniform_int(r,i-1);
 	CONF[newsize1] = CONF[newsize1] + 1;
+	
 	newsize2 = i - newsize1;
 	CONF[newsize2] = CONF[newsize2] + 1;
 }
 
 // Perform the simulation
-int SIM::KIN(char *parameters[]) 
+int SIM::KIN(char *parameters[], void (SIM::*reaction)(int i), std::ostream& os) 
 {
 	// Create reaction rate array
 	RATES.clear();
@@ -80,10 +78,6 @@ int SIM::KIN(char *parameters[])
 	for(int k=1; k<=Size; k++){
 		RATES.push_back(RATES.back() + k1 * CONF[k]*(k-1));
 	}
-
-	/* 
-	The Gillespie Algorithm
-	*/
 
 	// Determine exponentially distributed timestep
 	dt=log(1/gsl_rng_uniform_pos(r))/(RATES.back());
@@ -97,23 +91,12 @@ int SIM::KIN(char *parameters[])
 	ran = gsl_rng_uniform_pos(r)*RATES.back();
 	while (RATES.at(i)<ran) {i++;}
 
-	// Implement the reaction, alternative: change to makeSPLITunlabelled
-	makeSPLIT(i); 
+	// Implement the reaction
+	(this->*reaction)(i); 
 
-	// Display the configuration to terminal
+	// Output configuration to file
 	if (Time > Clock){
-		
-		std::cout << Time << " " ;
-		position = 0;
-		num = 0;
-		for (int k=1; k<=CONF.size(); k++) {
-				std::cout << CONF[k] << " ";
-				position = position + (k)*CONF[k];
-				mean = k*CONF[k];
-				num = num + CONF[k];
-			}
-		// std::cout << position << " " ;
-		std::cout << position/num << "\n";
+		printCONF(os);
 		Clock = Clock + Clock_count;
 	}
 	
@@ -121,3 +104,26 @@ int SIM::KIN(char *parameters[])
 	else return 1; 
 }
 
+//Utility function to print to any output stream
+void SIM::printCONF(std::ostream& os) 
+{
+	
+	/* Print configuration to file:
+		First row: time
+		2nd to n-1 row: configuration
+		nth row: average length of the configuration
+	*/
+	
+	os << Time << " " ;
+	position = 0;
+	num = 0;
+	for (int k=1; k<=CONF.size(); k++) {
+		os << CONF[k] << " ";
+		position = position + (k)*CONF[k];
+		mean = k*CONF[k];
+		num = num + CONF[k];
+	}
+
+	// std::cout << position << " " ;
+	os << position/num << "\n";
+}

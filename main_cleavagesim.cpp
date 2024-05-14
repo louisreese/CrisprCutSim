@@ -25,45 +25,29 @@ int main(int argc, char *argv[])
 	// Usage instructions
 		std::cout << "usage:  " << argv[0] << " [Int - polymer size]" << " [Float - digestion rate]" << " [Int - rng seed]" << "\n";
 		std::cout << "output: " << "[time] " << "[[Integer configuration array]] " << "[average polymer size]" << "\n";
-
-	// Determine algorithm used in last compilation 
-		char ch;
-		fstream fp;
-		fp.open("codestate.txt", fstream::in);
-		if(!fp)
-		{
-			std::cout << "\nNo current information about the algorithm employed. Please recompile.\n";
-			return 0;
-		}
-		while (fp.eof()==0)
-		{
-			fp.get(ch);
-			std::cout << ch;
-		}
-		fp.close();
-		std::cout << "\n";
 		return 1;	
 	}
 	else
 	{
-	// Initialize simulation class 
-		SIM First;
-		First.InitClass(argv);
-		First.RngInit(argv);
+	// Run simulation labelled DNA.
+		SIM Labelled;	
+		Labelled.RngInit(argv);
+		Labelled.InitClass(argv);
+		std::string filename1 = Labelled.createFilename("LABEL");
+		std::ofstream file1(filename1);
+		Labelled.printCONF(file1);
+		while(Labelled.KIN(argv, &SIM::makeSPLIT, file1) > 0){}; 
+		file1.close();
+		
+		SIM Unlabelled;
+		Unlabelled.RngInit(argv);
+		Unlabelled.InitClass(argv);
+		std::string filename2 = Unlabelled.createFilename("UNLABEL");
+		std::ofstream file2(filename2);
+		Unlabelled.printCONF(file2);
+		while(Unlabelled.KIN(argv, &SIM::makeSPLITunlabelled, file2) > 0){};
+		file2.close();
 
-	// Save initial configuration of SIM class
-		ofstream file_obj; 
-		char * OFile;
-		OFile = new char[80];
-		sprintf (OFile, "cleavagesim.conf");
-		file_obj.open(OFile, ios::app);
-		file_obj.write((char*)&First, sizeof(First)); 
-		file_obj.close();
-		delete OFile;
-
-	// Run simulation.
-		while(First.KIN(argv)>0){}; 
-	
 		return 1;
 	}
 }
