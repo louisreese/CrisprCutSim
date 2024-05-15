@@ -11,7 +11,7 @@ You can call the program from the commandline with three parameters:
 
     ./cutsim.out [Int - polymer size] [Float - digestion rate] [Int - rng seed]
 
-The output files will be `LABEL_$Size_$k1_RanInit.csv` and contain the following data in CSV:
+The output files will be `LABEL_$Size_$k1_$RanInit.csv` and contain the following data in CSV:
 
     [time] [[Integer configuration array]] [average polymer size]
 
