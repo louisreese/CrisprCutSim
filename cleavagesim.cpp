@@ -83,7 +83,7 @@ int SIM::KIN(char *parameters[], void (SIM::*reaction)(int i), std::ostream& os)
 	// Important to note: 
 	// the order has to be maintained corresponding to 
 	// propensities in RATES[] container
-	i=1;
+	i=2;
 	ran = gsl_rng_uniform_pos(r)*RATES.back();
 	while (RATES.at(i)<ran) {i++;}
 
