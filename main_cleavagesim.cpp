@@ -14,7 +14,7 @@
 #include <fstream>
 #include <gsl/gsl_rng.h>
 
-#include "cleavagesim.h"
+#include "crisprcutsim.h"
 
 using namespace std;
 
