@@ -1,8 +1,8 @@
 /*
  *
- *  Simulate digestion of DNA by nucleases.
+ *  Simulate digestion of DNA or RNA by CRISPR nucleases.
  *
- *  cleavagesim.cpp
+ *  crisprcutsim.cpp
  *  
  *  Created by Louis Reese on 18.01.2021
  *  Copyright 2021 Louis Reese. All rights reserved.
