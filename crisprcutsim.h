@@ -1,6 +1,6 @@
 /*
  *
- *  Simulate digestion of DNA and RNA by CRISPR nucleases.
+ *  Simulate digestion of DNA or RNA by CRISPR nucleases.
  *
  *  crisprcutsim.h
  *  
