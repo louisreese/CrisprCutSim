@@ -1,4 +1,4 @@
-# Stochastic Nucleotide Cleavage Simulation
+# Stochastic Simulation for CRISPR nucleases digesting a pool of DNA or RNA molecules
 The simulation was used to quantify the dynamics of a CRISPR-based DNA and RNA detection assay by compaing it to time-dependent gel electrophoresis experiments. Thereby only a fraction of the oligonucleotides is labelled with dye and fluorescence signals vanish much quicker as compared to turbidity in LLPS experiments. The code produces time dependent polymer mass distributions for the fluorescently labelled DNA as well as for the unlabelled DNA.
 
 
@@ -9,7 +9,7 @@ Please send me a message if you need help with this project. I do not actively m
 ## Running the program
 You can call the program from the commandline with three parameters:
 
-    ./cleavagesim.out [Int - polymer size] [Float - digestion rate] [Int - rng seed]
+    ./cutsim.out [Int - polymer size] [Float - digestion rate] [Int - rng seed]
 
 The output files will be `LABEL_$Size_$k1_RanInit.csv` and contain the following data in CSV:
 
