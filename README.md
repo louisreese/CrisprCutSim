@@ -8,6 +8,7 @@ Please send me a message if you need help with this project. I do not actively m
 
 ## Running the program
 You can call the program from the commandline with three parameters:
+
     ./cleavagesim.out [Int - polymer size] [Float - digestion rate] [Int - rng seed]
 
 The output files will be `LABEL_$Size_$k1_RanInit.csv` and contain the following data in CSV:
