@@ -11,10 +11,10 @@ LDFLAGS =  -lgsl -lgslcblas -lm
 HOME = ~
 
 # Define the output file
-TARGET = cleavagesim.out
+TARGET = cutsim.out
 
 # Source files
-SOURCES = main_cleavagesim.cpp cleavagesim.cpp
+SOURCES = main.cpp crisprcutsim.cpp
 
 # Object files
 OBJECTS = $(SOURCES:.cpp=.o)
