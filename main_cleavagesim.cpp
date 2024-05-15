@@ -39,6 +39,7 @@ int main(int argc, char *argv[])
 		while(Labelled.KIN(argv, &SIM::makeSPLIT, file1) > 0){}; 
 		file1.close();
 		
+	// Run simulation UNlabelled DNA.
 		SIM Unlabelled;
 		Unlabelled.RngInit(argv);
 		Unlabelled.InitClass(argv);

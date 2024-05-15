@@ -26,7 +26,7 @@ void SIM::RngInit(char *parameters[]){
        gsl_rng_set(r, RanInit);
 }
 
-// Creat Filename
+// Creat Filename including parameter values
 std::string SIM::createFilename(const std::string &base) {
     std::ostringstream oss;
     oss << base << "_" << std::fixed << std::setprecision(8) << SIM::Size << "_" << SIM::k1 << "_" << SIM::RanInit << ".dat";
@@ -47,31 +47,27 @@ void SIM::InitClass(char *parameters[]){
 	Clock_count = 1.0;
 	Clock = 1;
 	// printCONF(fs);
-
 }
 
-// Update the configuration labelled DNA
+// Update the configuration labelled DNA keep only the labelled DNA molecule
 void SIM::makeSPLIT(int i){
 	CONF[i]=CONF[i]-1;
 	newsize1 = 1 + gsl_rng_uniform_int(r,i-1);
 	CONF[newsize1] = CONF[newsize1] + 1;
 }
 
-// Update the configuration UNlabelled DNA
+// Update the configuration UNlabelled DNA, splits DNA in two
 void SIM::makeSPLITunlabelled(int i){
 	CONF[i]=CONF[i]-1;
-
 	newsize1 = 1 + gsl_rng_uniform_int(r,i-1);
 	CONF[newsize1] = CONF[newsize1] + 1;
-	
 	newsize2 = i - newsize1;
 	CONF[newsize2] = CONF[newsize2] + 1;
 }
 
 // Perform the simulation
-int SIM::KIN(char *parameters[], void (SIM::*reaction)(int i), std::ostream& os) 
-{
-	// Create reaction rate array
+int SIM::KIN(char *parameters[], void (SIM::*reaction)(int i), std::ostream& os) {
+	// Create propensities
 	RATES.clear();
 	RATES.push_back(0.0);
 	
@@ -87,27 +83,27 @@ int SIM::KIN(char *parameters[], void (SIM::*reaction)(int i), std::ostream& os)
 	// Important to note: 
 	// the order has to be maintained corresponding to 
 	// propensities in RATES[] container
-	i=2;
+	i=1;
 	ran = gsl_rng_uniform_pos(r)*RATES.back();
 	while (RATES.at(i)<ran) {i++;}
 
-	// Implement the reaction
+	// Implement the reaction based on which reaction scheme is used
 	(this->*reaction)(i); 
 
-	// Output configuration to file
+	// Conditional output configuration to file
 	if (Time > Clock){
 		printCONF(os);
 		Clock = Clock + Clock_count;
 	}
 	
-	if (CONF[1] ==  MAX_count) return 0;
+	// Stop conditions for the program
+	if ((CONF[1] >=  MAX_count && Time > 3600) || CONF[1] == MAX_count*Size) return 0;
 	else return 1; 
 }
 
 //Utility function to print to any output stream
 void SIM::printCONF(std::ostream& os) 
 {
-	
 	/* Print configuration to file:
 		First row: time
 		2nd to n-1 row: configuration
@@ -119,11 +115,8 @@ void SIM::printCONF(std::ostream& os)
 	num = 0;
 	for (int k=1; k<=CONF.size(); k++) {
 		os << CONF[k] << " ";
-		position = position + (k)*CONF[k];
-		mean = k*CONF[k];
+		position = position + k*CONF[k];
 		num = num + CONF[k];
 	}
-
-	// std::cout << position << " " ;
 	os << position/num << "\n";
 }
