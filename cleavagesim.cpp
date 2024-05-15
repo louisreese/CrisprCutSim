@@ -29,7 +29,7 @@ void SIM::RngInit(char *parameters[]){
 // Creat Filename including parameter values
 std::string SIM::createFilename(const std::string &base) {
     std::ostringstream oss;
-    oss << base << "_" << std::fixed << std::setprecision(8) << SIM::Size << "_" << SIM::k1 << "_" << SIM::RanInit << ".dat";
+    oss << base << "_" << std::fixed << std::setprecision(8) << SIM::Size << "_" << SIM::k1 << "_" << SIM::RanInit << ".csv";
     return oss.str();
 }
 
@@ -110,11 +110,11 @@ void SIM::printCONF(std::ostream& os)
 		nth row: average length of the configuration
 	*/
 	
-	os << Time << " " ;
+	os << Time << ", " ;
 	position = 0;
 	num = 0;
 	for (int k=1; k<=CONF.size(); k++) {
-		os << CONF[k] << " ";
+		os << CONF[k] << ", ";
 		position = position + k*CONF[k];
 		num = num + CONF[k];
 	}
